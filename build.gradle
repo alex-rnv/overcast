@@ -32,7 +32,7 @@ allprojects {
     license {
         header rootProject.file("${rootProject.projectDir}/gradle/license-header")
         ext.year = Calendar.getInstance().get(Calendar.YEAR)
-        ext.name = 'XebiaLabs'
+        ext.name = 'XebiaLabs B.V.'
     }
 }
 
@@ -43,7 +43,7 @@ dependencies {
 
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.guava:guava:16.0.1'
-    compile 'net.schmizz:sshj:0.9.0'
+    compile 'com.hierynomus:sshj:0.11.0'
     compile 'com.xebialabs.overthere:overthere:2.4.4'
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
 
@@ -54,6 +54,8 @@ dependencies {
     compile "org.apache.httpcomponents:httpcore:${apacheHttpVersion}"
     compile "org.apache.httpcomponents:httpclient:${apacheHttpVersion}"
     compile "com.spotify:docker-client:2.4.2"
+    compile "com.fasterxml.jackson.core:jackson-annotations:2.2.3"  // appease annotation warnings
+    compile "javax.ws.rs:jsr311-api:1.1.1"                          // appease annotation warnings
 
     compile 'com.typesafe:config:1.2.1'
 
