@@ -15,14 +15,14 @@
  */
 package com.xebialabs.overcast.host;
 
+import com.xebialabs.overcast.support.docker.DockerDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.xebialabs.overcast.support.docker.DockerDriver;
 
 public class DockerHost implements CloudHost {
 
@@ -36,6 +36,9 @@ public class DockerHost implements CloudHost {
     private boolean remove;
     private List<String> env;
     private Set<String> exposedPorts;
+    private Set<String> links;
+    private String outputHost;
+    private Set<String> portMappings;
 
     public DockerHost(String image, String dockerHostName) {
         try {
@@ -126,6 +129,30 @@ public class DockerHost implements CloudHost {
 
     public void setExposedPorts(final Set<String> exposedPorts) {
         this.exposedPorts = exposedPorts;
+    }
+
+    public Set<String> getLinks() {
+        return links;
+    }
+
+    public void setLinks(Set<String> links) {
+        this.links = links;
+    }
+
+    public String getOutputHost() {
+        return outputHost;
+    }
+
+    public void setOutputHost(String outputHost) {
+        this.outputHost = outputHost;
+    }
+
+    public Set<String> getPortMappings() {
+        return portMappings;
+    }
+
+    public void setPortMappings(Set<String> portMappings) {
+        this.portMappings = portMappings;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(DockerHost.class);

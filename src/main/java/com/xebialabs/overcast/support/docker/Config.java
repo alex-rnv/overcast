@@ -23,6 +23,9 @@ public class Config {
     public static final String DOCKER_REMOVE_SUFFIX = ".remove";
     public static final String DOCKER_ENV_SUFFIX = ".env";
     public static final String DOCKER_EXPOSED_PORTS_SUFFIX = ".exposedPorts";
+    public static final String DOCKER_OUTPUT_HOST_SUFFIX = ".outputHost";
+    public static final String DOCKER_LINK_SUFFIX = ".links";
+    public static final String DOCKER_PORT_MAPPING_SUFFIX = ".portMappings";
 
     public static final String DOCKER_EXPOSE_ALL_PORTS_SUFFIX = ".exposeAllPorts";
     public static final String DOCKER_DEFAULT_HOST = "http://localhost:2375";

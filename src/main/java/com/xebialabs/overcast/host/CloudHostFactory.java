@@ -15,15 +15,6 @@
  */
 package com.xebialabs.overcast.host;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.libvirt.Connect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.xebialabs.overcast.OvercastProperties;
 import com.xebialabs.overcast.command.Command;
 import com.xebialabs.overcast.command.CommandProcessor;
@@ -42,20 +33,21 @@ import com.xebialabs.overthere.spi.OverthereConnectionBuilder;
 import com.xebialabs.overthere.ssh.SshConnectionBuilder;
 import com.xebialabs.overthere.ssh.SshConnectionType;
 import com.xebialabs.overthere.util.DefaultAddressPortMapper;
+import org.libvirt.Connect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.xebialabs.overcast.OvercastProperties.*;
 import static com.xebialabs.overcast.command.CommandProcessor.atCurrentDir;
 import static com.xebialabs.overcast.command.CommandProcessor.atLocation;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.CACHE_EXPIRATION_CMD;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.CACHE_EXPIRATION_URL;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.COPY_SPEC;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.PROVISIONED_BOOT_DELAY;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.PROVISION_CMD;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.PROVISION_START_TIMEOUT;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.PROVISION_START_TIMEOUT_DEFAULT;
-import static com.xebialabs.overcast.host.CachedLibvirtHost.PROVISION_URL;
+import static com.xebialabs.overcast.host.CachedLibvirtHost.*;
 import static com.xebialabs.overcast.host.LibvirtHost.LIBVIRT_BOOT_DELAY_DEFAULT;
 import static com.xebialabs.overcast.host.LibvirtHost.LIBVIRT_BOOT_DELAY_PROPERTY_SUFFIX;
 import static com.xebialabs.overcast.host.LibvirtHost.LIBVIRT_FS_MAPPING_SUFFIX;
@@ -146,6 +138,9 @@ public class CloudHostFactory {
         dockerHost.setRemove(getOvercastBooleanProperty(label + Config.DOCKER_REMOVE_SUFFIX));
         dockerHost.setEnv(getOvercastListProperty(label + Config.DOCKER_ENV_SUFFIX));
         dockerHost.setExposedPorts(newHashSet(getOvercastListProperty(label + Config.DOCKER_EXPOSED_PORTS_SUFFIX)));
+        dockerHost.setLinks(newHashSet(getOvercastListProperty(label + Config.DOCKER_LINK_SUFFIX)));
+        dockerHost.setOutputHost(getOvercastProperty(label + Config.DOCKER_OUTPUT_HOST_SUFFIX));
+        dockerHost.setPortMappings(newHashSet(getOvercastListProperty(label + Config.DOCKER_PORT_MAPPING_SUFFIX)));
 
         return dockerHost;
     }

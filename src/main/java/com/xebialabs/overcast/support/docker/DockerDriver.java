@@ -15,17 +15,19 @@
  */
 package com.xebialabs.overcast.support.docker;
 
-import java.util.ArrayList;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.ImageNotFoundException;
-import com.spotify.docker.client.messages.*;
-
+import com.spotify.docker.client.messages.ContainerConfig;
+import com.spotify.docker.client.messages.ContainerInfo;
+import com.spotify.docker.client.messages.HostConfig;
+import com.spotify.docker.client.messages.PortBinding;
 import com.xebialabs.overcast.host.DockerHost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class DockerDriver {
 
@@ -52,6 +54,9 @@ public class DockerDriver {
         if(dockerHost.getExposedPorts() != null) {
             configBuilder.exposedPorts(dockerHost.getExposedPorts());
         }
+        if(dockerHost.getOutputHost() != null) {
+            configBuilder.hostname(dockerHost.getOutputHost());
+        }
 
         config = configBuilder.build();
     }
@@ -67,12 +72,17 @@ public class DockerDriver {
                 createImage();
             }
 
+            HostConfig.Builder hostConfigBuilder = HostConfig.builder();
             if(dockerHost.isExposeAllPorts()) {
-                HostConfig hostConfig = HostConfig.builder().publishAllPorts(true).build();
-                dockerClient.startContainer(containerId, hostConfig);
-            } else {
-                dockerClient.startContainer(containerId);
+                hostConfigBuilder.publishAllPorts(true);
             }
+            if(dockerHost.getLinks() != null) {
+                hostConfigBuilder.links(new ArrayList<String>(dockerHost.getLinks()));
+            }
+            if(dockerHost.getPortMappings() != null) {
+                hostConfigBuilder.portBindings(portBindings(dockerHost.getPortMappings()));
+            }
+            dockerClient.startContainer(containerId, hostConfigBuilder.build());
 
             final ContainerInfo info = dockerClient.inspectContainer(containerId);
             portMappings = info.networkSettings().ports();
@@ -115,6 +125,17 @@ public class DockerDriver {
 
     public String getContainerId() {
         return containerId;
+    }
+
+    private Map<String, List<PortBinding>> portBindings(Set<String> raw) {
+        Map<String, List<PortBinding>> map = new HashMap<String, List<PortBinding>>();
+        for(String binding : raw) {
+            String[] keyValue = binding.split(":");
+            if(keyValue.length == 2) {
+                map.put(keyValue[0], Collections.singletonList(PortBinding.of("0.0.0.0", keyValue[1])));
+            }
+        }
+        return map;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(DockerDriver.class);

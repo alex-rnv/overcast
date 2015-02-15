@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-version = '2.5.0-SNAPSHOT'
+version = '2.5.1-SNAPSHOT'
 //version = '2.4.0' // Last released version
 
 group = 'com.xebialabs.cloud'
@@ -107,6 +107,11 @@ allprojects {
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
+}
+
+task fatJar(type: Jar) {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
